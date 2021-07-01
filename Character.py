@@ -23,7 +23,7 @@ class Character:
 
     def getName(self):
         return self.name
-    
+
     def setHealth(self, newHealth):
         self.health = newHealth
 
@@ -41,10 +41,3 @@ class Character:
 
     def hurt(self, damage):
         self.health -= damage
-
-    
-
-
-     
-
-    

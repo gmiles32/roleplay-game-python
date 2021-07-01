@@ -1,4 +1,5 @@
 from Character import Character
+from Item import Item
 import random
 
 def doDamage(characterMaxDamage):
@@ -27,8 +28,18 @@ def fight(warrior, enemy, canFlee):
     roundCounter = 1
     while warrior.isAlive and enemy.isAlive():
         print("\n-----------------------------\n Round " + str(roundCounter) + "\n" + "-----------------------------")
-        warriorDamage = doDamage(warrior.getMaxDamage())
-        enemyDamage = doDamage(enemy.getMaxDamage())
+        
+        #Checks if warrior has found a weapon, and adds damage and removes protection if present
+        if warriorWeapon != None:
+            maxWarriorDamage = warrior.getMaxDamage() + warriorWeapon.getDamage()
+            maxEnemyDamage = enemy.getMaxDamage() - warriorWeapon.getProtection()
+        else:
+            maxWarriorDamage = warrior.getMaxDamage()
+            maxEnemyDamage = enemy.getMaxDamage()
+        
+        #Gets random damage values
+        warriorDamage = doDamage(maxWarriorDamage)
+        enemyDamage = doDamage(maxEnemyDamage)
 
         #Warriors turn
         print()
@@ -39,12 +50,14 @@ def fight(warrior, enemy, canFlee):
         input("Press enter")
         print()
 
-        if 0 <= warriorDamage and warriorDamage < warrior.getMaxDamage() // 3:
+        if 0 < warriorDamage and warriorDamage < warrior.getMaxDamage() // 3:
             print("Ow! Looks like you did " + str(warriorDamage) + " damage to the enemy. Wimp...")
         elif warrior.getMaxDamage() // 3 <= warriorDamage and warriorDamage < 2 * (warrior.getMaxDamage() // 3):
             print("Wabam! Looks like you did " + str(warriorDamage) + " damage to the enemy. Not bad...")
         elif 2 * (warrior.getMaxDamage() // 3) <= warriorDamage and warriorDamage <= warrior.getMaxDamage():
             print("Holy cow! Looks like you did " + str(warriorDamage) + " damage to the enemy. Remind me not to get on your bad side...")
+        elif warriorDamage == 0:
+            print("Yikes, looks like you missed.")
         
         print()
         if enemy.isAlive():
@@ -67,12 +80,14 @@ def fight(warrior, enemy, canFlee):
         input("Press enter")
         print()
 
-        if 0 <= enemyDamage and enemyDamage < 10:
+        if 0 < enemyDamage and enemyDamage < 10:
             print("Ouch? Looks like they did " + str(enemyDamage) + " damage to you. Thought they would hit harder...")
         elif 10 <= enemyDamage and enemyDamage < 20:
             print("Pow! Looks like they did " + str(enemyDamage) + " damage to you. Gonna feel that one in the morning...")
         elif 20 <= enemyDamage and enemyDamage <= 25:
             print("Holy S#$T! Looks like they did " + str(enemyDamage) + " damage to you. Medic, where's a medic...")
+        elif 0 == enemyDamage:
+            print("Nice dodge!")
         
         print()
         if warrior.isAlive():
@@ -102,6 +117,7 @@ def fight(warrior, enemy, canFlee):
 
 
 def getName():
+
     """
     Returns a name from a random index
     """
@@ -112,16 +128,30 @@ def getName():
     return names[randIndex]
 
 
+def sameNameDialogue(warrior, enemy):
+
+    """
+    Returns a fun blurp if names are same
+
+    *Note: would prefer to do this with a lambda function like this - 
+    lambda x : "(Hey same name, how fun)" if warrior.getName() == goblin.getName() else ""
+    """
+    if warrior.getName() == enemy.getName():
+        retVal = " (Hey same name how fun)"
+    else:
+        retVal = ""
+
+    return retVal
+
 #Character objects
 #You
 warrior = Character(random.randint(100, 150), random.randint(10, 20), None)
+warriorWeapon = None
 
 #Not so friendly guys
 goblin = Character(random.randint(20, 40), random.randint(5, 10), getName())
 troll = Character(random.randint(60, 100), random.randint(10, 15), getName())
 wyvern = Character(random.randint(150, 200), random.randint(20, 25), getName())
-
-
 
 #Beginning of game
 print("""
@@ -152,11 +182,12 @@ warrior.setName(warriorName)
 print()
 
 #Now that everyone is acquainted...
+
 print("""      
-      Very good, %s, thank you again for your help. Your first foe will be %s the goblin. They are quick
+      Very good, %s, thank you again for your help. Your first foe will be %s the goblin%s. They are quick
       and sly, never let them leave your sight for a moment. You will find their little cave over the hill 
       east of here. If you succeed, come find me and I will direct you to your next target. Good luck hero.
-      """ % (warrior.getName(), goblin.getName()))
+      """ % (warrior.getName(), goblin.getName(), sameNameDialogue(warrior, goblin)))
 print()
 input("Press enter")
 print()
@@ -202,10 +233,30 @@ print()
 print("""
       Alas, the foe is vanquished. %s was fast, but not fast enough. As they ran from your sweeping blade, they
       tripped and landed on their bloodied face, promptly breaking their own neck with a hearty \x1B[3mCrunch!\x1B[0m - 
-      a fitting end for such a slimy creature. On your way out of the hole, you stumble upon an chest in the rubble...
-      """)
+      a fitting end for such a slimy creature. On your way out of the hole, you stumble upon a chest in the rubble...
+      """ % goblin.getName())
 print()
-input("What do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+playerMove = input("What do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+print()
 
-#TODO: Make item class, fill in dialogue
+#Ensures an identified input
+while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
+    playerMove = input("That wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+#Item found
+if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
+    warriorWeapon = Item(random.randint(5, 15), random.randint(5, 15))
+    print("""
+          You begin to dig out the chest, and find it unlocked. You found a new weapon! You throw aside your rusty 
+          sword for this new companion. You find it's name engraved on the side: '%s'. A proper
+          name for real weapon. You feel more confident about the remaining two enemies that lie on the horizon.
+          """ % warriorWeapon.getName())
+elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
+    print("""
+          It looks intriguing, but judging by the surrounding of the cave, it's probably just trash. You stumble
+          your way out of the cave and into the sunlight.
+          """)
+
+#TODO: intermediary dialogue plus fight 2
+
 
