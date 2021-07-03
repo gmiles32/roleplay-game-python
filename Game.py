@@ -2,7 +2,6 @@ from Character import Character
 from Item import Item
 import random
 from os import system, name
-from time import sleep
 
 def doDamage(characterMaxDamage):
     """
@@ -157,6 +156,11 @@ def clear():
     """
     system('cls' if name == 'nt' else 'clear')
 
+
+"""
+Main method for Roleplay Game. Contains all game dialog and logic, incuding some helper
+functions to help keep code clean. To play the game, just run this file.
+"""
 
 #Character objects
 #You
