@@ -451,7 +451,7 @@ else:
                           )
 
         elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
-            print("\n\n\tIt's probably just weird troll garbarge. Maybe it's even troll makeup... you shudder at the thought and go on your way.")
+            print("\n\n\tIt's probably just weird troll garbage. Maybe it's even troll makeup... you shudder at the thought and go on your way.")
 
 input("\n\nPress Enter")
 
@@ -460,7 +460,48 @@ input("\n\nPress Enter")
 print(
       "\n\n\tIn the darkness, you climb back into the woods, leaving the river bed behind you. in the distance you can make out a red glimmer - "
       "\n\tthat must be the town! You head towards it with a warm meal in mind."
+
+      "\n\n\tAs you walk, you here a creak come from your left. You turn to look, but don't see anything."
       )
+
+playerMove = input("\n\nWhat do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+#Ensures an identified input
+while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
+    playerMove = input("\n\nThat wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
+    outcome = random.randint(0,1)
+
+    #You loose your weapon
+    if outcome == 0:
+        print(
+              "\n\n\tSo far today, you've been pretty lucky when you've examined stuff, why not again? You walk toward where the sound came from."
+              "\n\tAs you approach, a blinding light comes from behind a log. As you lift you arm up to avoid it, you feel something pass you."
+              "\n\tYou begin to regan your vision, franticly trying to assess the situation. You reach down to draw your weapon, but where it was"
+              "\n\tis now a ... branch. You've been robbed - and you have no idea how! Off in the distance, you see a white glimmer and the faint"
+              "\n\tsound of giggling. To tired to pursue, you turn back towards the village."
+
+              "\n\n\t\x1B[3mYou have lost your weapon\x1B[0m"
+              )
+
+        #No weapon for you
+        warriorWeapon = None
+
+    #Loose health
+    elif outcome == 1:
+        #Health adjustment
+        lostHealth = warrior.getHealth() // 4
+        warrior.setHealth(warrior.getHealth() - lostHealth)
+
+        print(
+              "\n\n\tYou strike off towards the sound, reading your weapon just in case it's the final foe. As you approach, you hear more rustling ..."
+              "\n\tand then a wolf jumps from the bushes! You try to draw your weapon, but before you can the wolf leaps and bites you leg. You scream in pain,"
+              "\n\tand before you can strike back the wolf rushes off into the night. You sit there, dazzed and in pain. You grab a nearby branch to use as a"
+              "\n\tcan. Hopefully the village has a good doctor."
+
+              f"\n\n\t\x1B[3mYou lost {lostHealth}pts from you health\x1B[0m"
+              )  
 
 #Dialogue before final fight
 print(
