@@ -502,6 +502,8 @@ if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
 
               f"\n\n\t\x1B[3mYou lost {lostHealth}pts from you health\x1B[0m"
               )  
+    elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
+        print("\n\n\tWeird noises in the woods? No thank you. You continue on you way.")
 
 #Dialogue before final fight
 print(
