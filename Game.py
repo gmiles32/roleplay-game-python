@@ -150,7 +150,7 @@ def sameNameDialogue(warrior, enemy):
     return retVal
 
 
-#Not actually used yet, I'm not sure wher to have clears...or whether I like it or not
+#Not actually used yet, I'm not sure where to have clears...or whether I like it or not
 def clear():
     """
     Clears terminal screen for you viewing pleasure
@@ -166,7 +166,7 @@ warriorWeapon = None
 #Not so friendly guys
 goblin = Character(random.randint(20, 40), random.randint(5, 10), getName())
 troll = Character(random.randint(60, 100), random.randint(10, 15), getName())
-wyvern = Character(random.randint(150, 200), random.randint(20, 25), getName())
+wyvern = Character(random.randint(150, 200), random.randint(20, 25), 'Masteme') #Spoiler alert
 
 #Beginning of game
 print(
@@ -231,7 +231,7 @@ if startFight.lower() == 'run' or startFight.lower() == 'r':
     input("\n\nPress enter")
 
 
-outcome = fight(warrior, goblin, False)
+outcome = fight(warrior, goblin, canFlee=False)
 
 #You die
 if outcome == 1:
@@ -330,7 +330,7 @@ if startFight.lower() == 'run' or startFight.lower() == 'r':
           )
 else:
     #Fight two sequence
-    outcome = fight(warrior, troll, True)
+    outcome = fight(warrior, troll, canFlee=True)
 
     #You died
     if outcome == 1:
@@ -380,11 +380,11 @@ else:
             print(
                   "\n\nWeapon Comparison:"
 
-                  f"\n\n\t\x1B[3m{warriorWeapon.getName()} stats\x1B[0m:"
+                  f"\n\n\t\x1B[3m{warriorWeapon.getName()}\x1B[0m stats:"
                   f"\n\tDamage - {warriorWeapon.getDamage()}"
                   f"\n\tProtection - {warriorWeapon.getProtection()}"
 
-                  f"\n\n\t\x1B[3m{newWeapon.getName()} stats\x1B[0m:"
+                  f"\n\n\t\x1B[3m{newWeapon.getName()}\x1B[0m stats:"
                   f"\n\tDamage - {newWeapon.getDamage()}"
                   f"\n\tProtection - {newWeapon.getProtection()}"
                   )
@@ -404,10 +404,10 @@ else:
                 #Update weapon
                 warriorWeapon = newWeapon
 
-            elif keepWeapon.lower() == 'keep' or keepWeapon == 'k':
+            elif keepWeapon.lower() == 'keep' or keepWeapon.lower() == 'k':
                 print(
                       f"\n\n\tThis new weapon is good, but nothing compares to {warriorWeapon.getName()}. Plus, it's just proven itself in battle. Better stick to ol'"
-                      "\n\n\treliable. "
+                      "\n\treliable. "
                       )
 
             playerMove = input("\n\nContinue searching the bag? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on):")
@@ -431,14 +431,14 @@ else:
 
                 #Drink potion, get healed
                 if toDrink.lower() == 'drink' or toDrink.lower() == 'd':
-                    print("""
+                    print(
                           "\n\n\t'Yah know what, what do I have to lose?' You uncap the vial, and take a swig - it smells worse than it looks. You feel"
-                          "\n\ta funny feeling in your stomach, and realize that drinking a questionable fluid from a trolls bag might have been illadvised."
+                          "\n\ta funny feeling in your stomach, and realize that drinking a questionable fluid from a trolls bag may have been illadvised."
                           "\n\tThe queesy feeling continues but as you look at your arms the cuts and bruises start to fade. Your being healed! Looks like"
                           "\n\tit was worth it after all.."
 
                           "\n\n\t\x1B[3mHealth increased + 40pts\x1B[0m"
-                          """)
+                          )
 
                     #Warrior healed
                     warrior.setHealth(warrior.getHealth() + 40)
@@ -455,7 +455,77 @@ else:
 
 input("\n\nPress Enter")
 
+#TODO: split this in half to that you find something in the dark woods, and if you examine it you loose either health or you weapon, at random
+#then you do the battle totally boned lol
+print(
+      "\n\n\tIn the darkness, you climb back into the woods, leaving the river bed behind you. in the distance you can make out a red glimmer - "
+      "\n\tthat must be the town! You head towards it with a warm meal in mind."
+      )
+
 #Dialogue before final fight
 print(
-      "\n\n\tIn the darkness, you climb back into the woods, leaving the river bed behind you."
+      "\n\n\tAs you get closer to the village, you realize that the red glow isn't laterns - the village is ablaze! You pick up your pace. This must"
+      "\n\tbe the last foe Masteme warned you of. You break into a clearing, and the village comes into view, engulfed in flames. No one is in"
+      "\n\tsight, not even the culprit. As you examine the flames, you feel a strong grasp upon the back of your shirt. You feel your feet"
+      "\n\tleave the ground as you are picked up and flung. As you hit the ground you let out a grunt, and when you roll over to face your attacker"
+      "\n\tyou see Masteme, his face emotionless and his eyes glowing an amber red, like hot coals. Not only that, but his eyes are..."
+      "\n\trepitlian. Before you can say anything, he hisses..."
+
+      "\n\n\t\t'I thought those fools would have killed you, but apparently I have to do everything on my own.'"
+
+      "\n\n\tAs he speaks, his skin begins to split as the body underneath writhes and expands into a giant *wyvern! Masteme is a wyvern\u203D But he's"
+      "\n\tthe chieftan, why would he destroy his village...and then it dawns on you. You never actually saw anyone else - it was all a setup. You"
+      "\n\tbegin to stand, and Masteme laughs, smoke billowing from his scaly nostrils."
+
+      "\n\n\t\t'Fool! Face me and you will perish - I've never been bested, and I do not imagine today will be any different'"
+
+      "\n\n\tF$#kin cocky bastard..."
+
+      "\n\n\x1B[3m*A wyvern is a bipedal dragon with wings as arms. I did this because I can.\x1B[0m"
       )
+
+startFight = input("\n\nReady to fight? (Press enter to continue, or type 'Run' or 'R' to flee): ")
+
+#Ensures an identified input
+while startFight.lower() != '' and startFight.lower() != 'run' and startFight.lower() != 'r':
+    startFight = input("\n\nThat wasn't an option, try again (Press enter to continue, or type 'Run' or 'R' to flee): ")
+
+if startFight.lower() == 'run' or startFight.lower() == 'r':
+    print("\n\n\tSo Masteme has wings. And he can breathe fire. You run and you a nice flame broiled chicken breast...")
+    print("\n\t\x1B[3mThere is no escape\x1B[0m")
+    input("\n\nPress enter")
+
+#Final battle
+outcome = fight(warrior, wyvern, canFlee=False)
+
+#You die
+if outcome == 1:
+    print(
+          "\n\n\tBloodied and burned, you make one last charge, trying to slice at Masteme's legs. Your weapon makes contact, and your stomach"
+          "\n\tas it shatters on the hardened scales. Masteme chuckles above you."
+
+          "\n\n\t'That was ill advised my friend."
+
+          "\n\n\tYou feel one of his talons grab your back, flinging you high up into the air. The last thing you see is Masteme's"
+          "\n\tsly smirk as he swallows you whole."
+
+          "\n\n\tI don't know who had it worse, you or Noah..."
+          )
+
+    #Game over
+    exit()
+
+#You win, Masteme defeated
+elif outcome == 0:
+    print(
+          "\n\n\tMasteme might be big and firebreathing, but he has seriously underestimated you. Dodging his over confident strikes, you manage to grab"
+          "\n\this wing and swing onto his back. He tries to grab at you, but you've managed to stay just out of reach. You examine his hide for a weakness."
+          "\n\tJust above his right wing, there's a slight gap when he flaps. Timing your strike just right, plunge your weapon into his side. Masteme begins"
+          "\n\tto stagger."
+
+          "\n\n\t\t'What is this...feeling? Is this pain? What a stranger it has been all these centuries.'"
+
+          "\n\n\tHe staggers forward, falling onto his chest. You slide off as the great beast goes limp. Victory! You sit on the ground, letting your weapon"
+          "\n\tfall by your side. Exhaustion takes over, and you pass out by the corpse of you foe."
+          )
+
