@@ -1,6 +1,8 @@
 from Character import Character
 from Item import Item
 import random
+from os import system, name
+from time import sleep
 
 def doDamage(characterMaxDamage):
     """
@@ -27,7 +29,7 @@ def fight(warrior, enemy, canFlee):
 
     roundCounter = 1
     while warrior.isAlive and enemy.isAlive():
-        print("\n-----------------------------\n Round " + str(roundCounter) + "\n" + "-----------------------------")
+        print("\n" + ("-" * 40) + "\n Round " + str(roundCounter) + "\n" + ("-" * 40))
         
         #Checks if warrior has found a weapon, and adds damage and removes protection if present
         if warriorWeapon != None:
@@ -50,14 +52,16 @@ def fight(warrior, enemy, canFlee):
         input("Press enter")
         print()
 
-        if 0 < warriorDamage and warriorDamage < warrior.getMaxDamage() // 3:
+        if 0 < warriorDamage and warriorDamage < maxWarriorDamage // 3:
             print("Ow! Looks like you did " + str(warriorDamage) + " damage to the enemy. Wimp...")
-        elif warrior.getMaxDamage() // 3 <= warriorDamage and warriorDamage < 2 * (warrior.getMaxDamage() // 3):
+        elif maxWarriorDamage // 3 <= warriorDamage and warriorDamage < 2 * (maxWarriorDamage // 3):
             print("Wabam! Looks like you did " + str(warriorDamage) + " damage to the enemy. Not bad...")
-        elif 2 * (warrior.getMaxDamage() // 3) <= warriorDamage and warriorDamage <= warrior.getMaxDamage():
+        elif 2 * (maxWarriorDamage // 3) <= warriorDamage and warriorDamage <= maxWarriorDamage:
             print("Holy cow! Looks like you did " + str(warriorDamage) + " damage to the enemy. Remind me not to get on your bad side...")
         elif warriorDamage == 0:
             print("Yikes, looks like you missed.")
+        else:
+            print("Looks like you did " + str(warriorDamage) + " damage to the enemy.")
         
         print()
         if enemy.isAlive():
@@ -88,6 +92,8 @@ def fight(warrior, enemy, canFlee):
             print("Holy S#$T! Looks like they did " + str(enemyDamage) + " damage to you. Medic, where's a medic...")
         elif 0 == enemyDamage:
             print("Nice dodge!")
+        else:
+            print("Looks like they did " + str(enemyDamage) + " damage to you.")
         
         print()
         if warrior.isAlive():
@@ -99,9 +105,9 @@ def fight(warrior, enemy, canFlee):
             break
 
         #Allows player to flee
-        fightStatus = input("Would you like to continue? (Press enter to keep fighting, type 'Run' to flee): ")
+        fightStatus = input("Would you like to continue? (Press enter to keep fighting, type 'Run' or 'R' to flee): ")
         print()
-        if fightStatus.lower() == 'run':
+        if fightStatus.lower() == 'run' or fightStatus.lower() =='r':
             if canFlee == False:
                 print("\x1B[3mThere is no escape\x1B[0m")
                 print()
@@ -143,6 +149,15 @@ def sameNameDialogue(warrior, enemy):
 
     return retVal
 
+
+#Not actually used yet, I'm not sure wher to have clears...or whether I like it or not
+def clear():
+    """
+    Clears terminal screen for you viewing pleasure
+    """
+    system('cls' if name == 'nt' else 'clear')
+
+
 #Character objects
 #You
 warrior = Character(random.randint(100, 150), random.randint(10, 20), None)
@@ -154,109 +169,293 @@ troll = Character(random.randint(60, 100), random.randint(10, 15), getName())
 wyvern = Character(random.randint(150, 200), random.randint(20, 25), getName())
 
 #Beginning of game
-print("""
-      Welcome brave warrior! I am Masteme, the chief of Feirytic, and my people need your help.
-      In the woods surrounding our town, lie three ferocious monsters that terrorize us. I am
-      too old to face them, and we have no one else strong enough. Will you help rid us of our
-      plague, so that we may be free once again?
-      """)
+print(
+      "\n\tWelcome brave warrior! I am Masteme, the chief of Feirytic, and my people need your help."
+      "\n\tIn the woods surrounding our town, lie three ferocious monsters that terrorize us. I am"
+      "\n\ttoo old to face them, and we have no one else strong enough. Will you help rid us of our"
+      "\n\tplague, so that we may be free once again?"
+      )
 
-startGame = input("Will you help Masteme and his people? (Press enter to help, type 'N' or 'no' to leave the town of Feirytic to ruin): ")
+startGame = input("\n\nWill you help Masteme and his people? (Press enter to help, type 'N' or 'no' to leave the town of Feirytic to ruin): ")
 if startGame.lower() == 'n' or startGame.lower() == 'no':
-    print("Then why are you even here, what a jerk...")
+    print("\n\nThen why are you even here, what a jerk...")
     exit()
 
-print()
+#clear()
 
 #Our hero agrees to the challenge...
-print("""
-      Thank you great warrior! What should we call you?
-      """)
-warriorName = input("What is you name? (Type a name here, or press enter for an auto generated one): ")
+print(
+      "\n\n\tThank you great warrior! What should we call you?"
+      )
+warriorName = input("\n\nWhat is you name? (Type a name here, or press enter for an auto generated one): ")
 if warriorName == '':
     warriorName = getName()
 
 #Add name to character
 warrior.setName(warriorName)
 
-print()
-
 #Now that everyone is acquainted...
 
-print("""      
-      Very good, %s, thank you again for your help. Your first foe will be %s the goblin%s. They are quick
-      and sly, never let them leave your sight for a moment. You will find their little cave over the hill 
-      east of here. If you succeed, come find me and I will direct you to your next target. Good luck hero.
-      """ % (warrior.getName(), goblin.getName(), sameNameDialogue(warrior, goblin)))
-print()
-input("Press enter")
-print()
+print(    
+      f"\n\n\tVery good, {warrior.getName()}, thank you again for your help. Your first foe will be {goblin.getName()} the goblin{sameNameDialogue(warrior, goblin)}. They are quick"
+      "\n\tand sly, never let them leave your sight for a moment. You will find their little cave over the hill" 
+      "\n\teast of here. If you succeed, come find me and I will direct you to your next target. Good luck hero."
+      )
+
+input("\n\nPress enter")
 
 #Round 1, fight!
-print("""
-      Following Masteme's directions, you head east to find the nasty goblin. After exiting the town,
-      you find a lightly worn trail through the woods. With the late afternoon sun on your back, you
-      follow it, tensing at every creek and groan coming from the woods around you. After about an hour,
-      you finally make it to the hill. You climb to the top to see if you can locate the cave ... and
-      then the top of the hill crumbles beneath you. A trap! You are suddenly in the dark, where you hear
-      a voice croak:
+print(
+      "\n\n\tFollowing Masteme's directions, you head east to find the nasty goblin. After exiting the town,"
+      "\n\tyou find a lightly worn trail through the woods. With the late afternoon sun on your back, you"
+      "\n\tfollow it, tensing at every creek and groan coming from the woods around you. After about an hour,"
+      "\n\tyou finally make it to the hill. You climb to the top to see if you can locate the cave ... and"
+      "\n\tthen the top of the hill crumbles beneath you. A trap! You are suddenly in the dark, where you hear"
+      "\n\ta voice croak:"
 
-            'Finally, a snack - must eat it while it's still fresh!'
+            "\n\n\t\t'Finally, a snack - must eat it while it's still fresh!'"
 
-      Little does %s know, this snack doesn't smile back...
-      """ % goblin.getName())
+      f"\n\n\tLittle does {goblin.getName()} know, this snack doesn't smile back..."
+      )
 
-startFight = input("Ready to fight? (Press enter to continue, or type 'Run' to flee): ")
-print()
-if startFight.lower() == 'run':
-    print("Really? Some hero you are. Remember, you fell into a hill, so you're kind of stuck. Maybe you guys can make friendship bracelets together...")
-    print("\x1B[3mThere is no escape\x1B[0m")
-    print()
-    input("Press enter")
+startFight = input("\n\nReady to fight? (Press enter to continue, or type 'Run' or 'R' to flee): ")
+
+#Ensures an identified input
+while startFight.lower() != '' and startFight.lower() != 'run' and startFight.lower() != 'r':
+    startFight = input("That wasn't an option, try again (Press enter to continue, or type 'Run' or 'R' to flee): ")
+
+#Can't run from this fight, get admonished
+if startFight.lower() == 'run' or startFight.lower() == 'r':
+    print("\n\n\tReally? Some hero you are. Remember, you fell into a hill, so you're kind of stuck. Maybe you guys can make friendship bracelets together...")
+    print("\n\t\x1B[3mThere is no escape\x1B[0m")
+    input("\n\nPress enter")
 
 
 outcome = fight(warrior, goblin, False)
 
+#You die
 if outcome == 1:
     print()
-    print("""
-          Well, Masteme wasn't kidding - %s is a slimy fella. They dashed between you legs, cutting your
-          great saphenous vein. You might know too much about anatomy and physiology, but all that knowledge
-          isn't very helpful when you bleeding out, stuck on the inside of the mountain. %s continued to cut
-          you here, and as you begin to faint the last image is their gleaming smile, as they ready themselves
-          for a warm meal...
+    print(
+          f"\n\tWell, Masteme wasn't kidding - {goblin.getName()} is a slimy fella. They dashed between you legs, cutting your"
+          "\n\tgreat saphenous vein. You might know too much about anatomy and physiology, but all that knowledge"
+          f"\n\tisn't very helpful when you bleeding out, stuck on the inside of the mountain. {goblin.getName()} continued to cut"
+          "\n\tyou here, and as you begin to faint the last image is their gleaming smile, as they ready themselves"
+          "\n\tfor a warm meal..."
 
-          Don't be discouraged, it happens to the best of us.
-          """ % goblin.getName())
+          "\n\n\tDon't be discouraged, it happens to the best of us."
+          )
 
-print()
-print("""
-      Alas, the foe is vanquished. %s was fast, but not fast enough. As they ran from your sweeping blade, they
-      tripped and landed on their bloodied face, promptly breaking their own neck with a hearty \x1B[3mCrunch!\x1B[0m - 
-      a fitting end for such a slimy creature. On your way out of the hole, you stumble upon a chest in the rubble...
-      """ % goblin.getName())
-print()
-playerMove = input("What do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
-print()
+    #Game over
+    exit()
+
+#Goblin is killed
+elif outcome == 0:
+    print(
+          f"\n\tAlas, the foe is vanquished. {goblin.getName()} was fast, but not fast enough. As they ran from your sweeping blade, they"
+          "\n\ttripped and landed on their bloodied face, promptly breaking their own neck with a hearty \x1B[3mCrunch!\x1B[0m -"
+          "\n\ta fitting end for such a slimy creature. On your way out of the hole, you stumble upon a chest in the rubble..."
+          )
+    
+    playerMove = input("\n\nWhat do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+    #Ensures an identified input
+    while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
+        playerMove = input("\n\nThat wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+    #Item found
+    if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
+        warriorWeapon = Item(random.randint(5, 15), random.randint(0, 10))
+        print(
+              "\n\n\tYou begin to dig out the chest, and find it unlocked. You found a new weapon! You throw aside your rusty" 
+              f"\n\tsword for this new companion. You find it's name engraved on the side: '{warriorWeapon.getName()}'. A proper"
+              "\n\tname for a real weapon. You feel more confident about the remaining two enemies that lie on the horizon."
+              )
+
+    elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
+        print(
+              "\n\n\tIt looks intriguing, but judging by the surrounding of the cave, it's probably just trash. You stumble"
+              "\n\tyour way out of the cave and into the sunlight."
+             )
+
+    input("\n\nPress enter")
+
+#Dialogue before fight 2
+print(
+      "\n\n\tBy the time you've dug your way out of the rubble that once was a hill, the sun has just reached the horizon in"
+      "\n\ta brilliant sunset. Reorienting yourself, you begin to make your way back to the village. The sunset"
+      "\n\tcreates long shadows along the ground, making it difficult to figure out if what your seeing are trees or your"
+      "\n\tnext foe - you do still have two left."
+
+      "\n\n\tAfter awhile, you realize you're thoughouly lost. You begin to stumble around the slowly darkening forest,"
+      "\n\ttrying to find the path that brought you to the hill. Eventually, you do find a path, but this one is much more"
+      "\n\tovergrown. You decide to follow it, hoping that it will bring you back to the village. You pick up the pace,"
+      "\n\tavoiding mouse holes and roots as you walk. A clearing appear in front of you, and your path leads to a bridge"
+      "\n\tcrossing a long dried up river bed."
+     )
+
+input("\n\nPress Enter")
+
+clear()
+
+print(
+      "\n\n\tMaking you way across the bridge, you begin to realize that it looks ... weird. The cobblestones look more like grey,"
+      "\n\tdried skin than stones. And it's not quite as hard as you would have thought, since it's supposed to be"
+      "\n\tstone. And that's when it hits you - literally and figuratively - as the bridge begins to rise and grunt. Hitchiker's"
+      "\n\tGuide to the Galaxy comes to mind, with a very apt quote, 'Oh no, not again...'"
+
+      "\n\n\tAs the bridge continues to rise, you begin to make out a peaceful, but rather grotesque face of a troll."
+      "\n\tIn the process of standing up, it tosses you off of it's back (Oof) and begins to yawn."
+
+      f"\n\n\t\t'Who dares to awaken {troll.getName()}{sameNameDialogue(warrior, troll)} from their beauty sleep!! A few more centuries and I would have been irresitable!'"
+
+      "\n\n\tThe troll looks around, and eventually locks onto you." 
+
+      "\n\n\t\t'You! I'm gonna kick your mildly handsome face in!'"
+      
+      "\n\n\tMildly handsome, that's kind of a low blow..."
+      )
+
+startFight = input("\n\nReady to fight? (Press enter to continue, or type 'Run' or 'R' to flee): ")
 
 #Ensures an identified input
-while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
-    playerMove = input("That wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
-
-#Item found
-if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
-    warriorWeapon = Item(random.randint(5, 15), random.randint(5, 15))
-    print("""
-          You begin to dig out the chest, and find it unlocked. You found a new weapon! You throw aside your rusty 
-          sword for this new companion. You find it's name engraved on the side: '%s'. A proper
-          name for real weapon. You feel more confident about the remaining two enemies that lie on the horizon.
-          """ % warriorWeapon.getName())
-elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
-    print("""
-          It looks intriguing, but judging by the surrounding of the cave, it's probably just trash. You stumble
-          your way out of the cave and into the sunlight.
-          """)
-
-#TODO: intermediary dialogue plus fight 2
+while startFight.lower() != '' and startFight.lower() != 'run' and startFight.lower() != 'r':
+    startFight = input("\n\nThat wasn't an option, try again (Press enter to continue, or type 'Run' or 'R' to flee): ")
 
 
+if startFight.lower() == 'run' or startFight.lower() == 'r':
+    print( 
+          "\n\n\tThe troll charges towards you, but apparently it's a little groggy from it's slumber. It slams it's"
+          "\n\tbig toe into a rock, and screams in pain. In their moment of distraction, you slip away. That was a close one!"
+          )
+else:
+    #Fight two sequence
+    outcome = fight(warrior, troll, True)
+
+    #You died
+    if outcome == 1:
+        print(
+              "\n\n\tYou begin to slow as you battered by the trolls blows - for having just woken up, the troll is suprisingly aware and agile."
+              "\n\tMust be all that rage, just as good as a morning cup of coffee. Consciousness begins to fade in and out as you try to dodge"
+              "\n\tand inevitably end up in the trolls grasp once again. The troll reaches down to grab you - you try to avaid but all your strength"
+              "\n\tbegins to leave you." 
+
+              "\n\n\t\t'Your not looking so good, maybe you should think twice before waking up a troll smarty pants'"
+
+              f"\n\n\t{troll.getName()} then crushes you skull like a grape between there fingers. Your brains splatter everywhere."
+                  
+              "\n\n\tHonestly, I'm just impressed you had any at all..."
+              )
+
+        #Game over
+        exit()
+
+    #You kill weird bridge troll guy
+    elif outcome == 0:
+        print( 
+              f"\n\n\tThe {troll.getName()} the troll begins to look dazzed - probably from the loss of blood. Eventually, the troll falls to their"
+              "\n\tknees, too weak to continue fighting. They lower their head:"
+
+              "\n\n\t\t'I stand defeated, have mercy and finish of my mildly attractive being'"
+
+              "\n\n\tAs you approach to strike the final blow, in a blur the troll moves to make one final strike. But you"
+              "\n\twere expecting this - you dodge them and strike back, killing them instantly. As the troll falls to the"
+              "\n\tside, you notice a bag on their neck."
+              )
+
+        playerMove = input("\n\nWhat do you do? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+        #Ensures an identified input
+        while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
+            playerMove = input("\n\nThat wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+        if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
+            #You found a new weapon!
+            newWeapon = Item(random.randint(10, 20), random.randint(5, 15))
+            print(
+                  "\n\n\tYou approach to cooling corpse, and pull the bag off of their neck. In the last remaining light, you"
+                  "\n\tsee the something glimmer from within. A weapon!"
+                  )
+
+            print(
+                  "\n\nWeapon Comparison:"
+
+                  f"\n\n\t\x1B[3m{warriorWeapon.getName()} stats\x1B[0m:"
+                  f"\n\tDamage - {warriorWeapon.getDamage()}"
+                  f"\n\tProtection - {warriorWeapon.getProtection()}"
+
+                  f"\n\n\t\x1B[3m{newWeapon.getName()} stats\x1B[0m:"
+                  f"\n\tDamage - {newWeapon.getDamage()}"
+                  f"\n\tProtection - {newWeapon.getProtection()}"
+                  )
+
+            keepWeapon = input("\n\nWhat do you do? (Type 'Take' or 'T' to take the new weapon, 'Keep' or 'K' to keep the old weapon): ")
+
+            #Ensures an identified input
+            while keepWeapon.lower() != 'take' and keepWeapon.lower() != 't' and keepWeapon.lower() != 'keep' and keepWeapon.lower() != 'k':
+                keepWeapon = input("\n\nThat wasn't an option, try again (Type 'Take' or 'T' to take the new weapon, 'Keep' or 'K' to keep the old weapon): ")
+            
+            if keepWeapon.lower() == 'take' or keepWeapon.lower() == 't':
+                print(
+                      f"\n\n\tYou take {newWeapon.getName()} into your hand, casting aside {warriorWeapon.getName()} - it served you well in this last battle, but your going to need something more"
+                      "\n\n\tsubstantial for the final foe."
+                      )
+                      
+                #Update weapon
+                warriorWeapon = newWeapon
+
+            elif keepWeapon.lower() == 'keep' or keepWeapon == 'k':
+                print(
+                      f"\n\n\tThis new weapon is good, but nothing compares to {warriorWeapon.getName()}. Plus, it's just proven itself in battle. Better stick to ol'"
+                      "\n\n\treliable. "
+                      )
+
+            playerMove = input("\n\nContinue searching the bag? (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on):")
+
+            #Ensures an identified input
+            while playerMove.lower() != 'examine' and playerMove.lower() != 'e' and playerMove.lower() != 'ignore' and playerMove.lower() != 'i':
+                playerMove = input("\n\nThat wasn't an option, try again (Type 'Examine' or 'E' to look, 'Ignore' or 'I' to move on): ")
+
+            if playerMove.lower() == 'examine' or playerMove.lower() == 'e':
+                print(
+                      "\n\n\tSomething in your gut tells you that weapon wasn't the only thing hiding in that pouch. And sure enough, reaching your"
+                      "\n\tarm deeper into the bag you pull out a vial filled with a chunky, vaguely red fluid(?). The label reads '\x1B[3mFor Emergencies"
+                      "\n\tOnly\x1B[0m'. Kind of hard to tell if it was meant to heal or kill you..."
+                      )
+                
+                toDrink = input("\n\nWhat do you do? (Type 'Drink' or 'D' to drink, 'Pass' or 'P' to do the smart things): ")
+                
+                #Ensures an identified input
+                while toDrink.lower() != 'drink' and toDrink.lower() != 'd' and toDrink.lower() != 'pass' and toDrink.lower() != 'p':
+                    toDrink = input("\n\nThat wasn't an option, try again (Type 'Drink' or 'D' to drink, 'Pass' or 'P' to do the smart things): ")
+
+                #Drink potion, get healed
+                if toDrink.lower() == 'drink' or toDrink.lower() == 'd':
+                    print("""
+                          "\n\n\t'Yah know what, what do I have to lose?' You uncap the vial, and take a swig - it smells worse than it looks. You feel"
+                          "\n\ta funny feeling in your stomach, and realize that drinking a questionable fluid from a trolls bag might have been illadvised."
+                          "\n\tThe queesy feeling continues but as you look at your arms the cuts and bruises start to fade. Your being healed! Looks like"
+                          "\n\tit was worth it after all.."
+
+                          "\n\n\t\x1B[3mHealth increased + 40pts\x1B[0m"
+                          """)
+
+                    #Warrior healed
+                    warrior.setHealth(warrior.getHealth() + 40)
+
+                #Only the bold are rewarded...
+                elif toDrink.lower() == 'pass' or toDrink.lower() == 'p':
+                    print(
+                          "\n\n\tWhy in God's name would I drink a questionable fluid from a trolls' bag? Did my parents teach me nothing? You cast the vial aside,"
+                          "\n\twhere it shatters on the ground, spreading it's foul smelling contents across the forgotten river bed. Good ridance."
+                          )
+
+        elif playerMove.lower() == 'ignore' or playerMove.lower() == 'i':
+            print("\n\n\tIt's probably just weird troll garbarge. Maybe it's even troll makeup... you shudder at the thought and go on your way.")
+
+input("\n\nPress Enter")
+
+#Dialogue before final fight
+print(
+      "\n\n\tIn the darkness, you climb back into the woods, leaving the river bed behind you."
+      )
